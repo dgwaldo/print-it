@@ -8,7 +8,7 @@ using PrintIt.Core;
 namespace PrintIt.WebHost.Controllerrs
 {
     [ApiController]
-    [Route("print")]
+    [Route("api/print")]
     public class PrintController : ControllerBase
     {
         private readonly IPdfPrintService _pdfPrintService;
