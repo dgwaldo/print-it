@@ -37,6 +37,6 @@ steps:
 - task: PublishBuildArtifacts@1
   displayName: 'Publish Artifact'
   inputs:
-    PathtoPublish: '$(build.artifactstagingdirectory)\PrintIt.WebHost'
+    PathtoPublish: '$(build.artifactstagingdirectory)'
     ArtifactName: 'drop'
   condition: succeededOrFailed()
