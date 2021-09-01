@@ -8,6 +8,7 @@ using Microsoft.OpenApi.Models;
 using System;
 using System.Reflection;
 using System.IO;
+using Serilog;
 
 namespace PrintIt.WebHost
 {
@@ -24,8 +25,9 @@ namespace PrintIt.WebHost
 		public void ConfigureServices(IServiceCollection services)
 		{
             services.AddPrintIt();
-            services.AddMvc();
-          
+
+            services.AddControllers();
+
             services.AddSwaggerGen(c => {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "PrintIt API", Version = "v1" });
                 var xmlFile = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
@@ -48,8 +50,13 @@ namespace PrintIt.WebHost
 				app.UseHsts();
 			}
 
-			app.UseHttpsRedirection();
-			app.UseStaticFiles();
+
+#if DEBUG
+            app.UseSerilogRequestLogging();
+#endif
+
+            //app.UseHttpsRedirection();
+            app.UseStaticFiles();
 
 			app.UseRouting();
 
