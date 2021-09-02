@@ -34,6 +34,9 @@ PageRange    |                    | An optional page range string (f.e. "1-5", "
 
 ## .Net Core WebHost 
 Allows running the application from a hosted web api
+If you host the API on Server Core, don't forget to install printer support
+
+`Install-WindowsFeature Print-Services`
 
 
 ## PDFium
