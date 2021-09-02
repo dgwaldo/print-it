@@ -9,6 +9,7 @@ using System;
 using System.Reflection;
 using System.IO;
 using Serilog;
+using PrintIt.Core.Pdfium;
 
 namespace PrintIt.WebHost
 {
@@ -24,7 +25,17 @@ namespace PrintIt.WebHost
 		// This method gets called by the runtime. Use this method to add services to the container.
 		public void ConfigureServices(IServiceCollection services)
 		{
+            PdfLibrary.EnsureInitialized();
             services.AddPrintIt();
+
+            services.AddCors(options =>
+            {
+                options.AddPolicy(name: "AMS_CORS",
+                                  builder =>
+                                  {
+                                      builder.AllowAnyOrigin();
+                                  });
+            });
 
             services.AddControllers();
 
@@ -55,10 +66,12 @@ namespace PrintIt.WebHost
             app.UseSerilogRequestLogging();
 #endif
 
-            //app.UseHttpsRedirection();
+            app.UseHttpsRedirection();
             app.UseStaticFiles();
 
 			app.UseRouting();
+
+            app.UseCors();
 
             app.UseEndpoints(endpoints => {
                 endpoints.MapControllers();

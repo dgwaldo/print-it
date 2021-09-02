@@ -11,7 +11,7 @@
     <RepositoryUrl>https://github.com/huysentruitw/print-it</RepositoryUrl>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
     <CodeAnalysisRuleSet>..\..\ca.ruleset</CodeAnalysisRuleSet>
-    <PlatformTarget>x64</PlatformTarget>
+    <PlatformTarget>AnyCPU</PlatformTarget>
   </PropertyGroup>
 
   <PropertyGroup>
