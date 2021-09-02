@@ -18,6 +18,11 @@ namespace PrintIt.WebHost.Controllerrs
             _pdfPrintService = pdfPrintService;
         }
 
+        /// <summary>
+        /// Prints a pdf to a network printer.
+        /// </summary>
+        /// <param name="request"></param>
+        /// <returns></returns>
         [HttpPost]
         [Route("from-pdf")]
         public async Task<IActionResult> PrintFromPdf([FromForm] PrintFromTemplateRequest request)

@@ -4,5 +4,12 @@
         <name>PrintIt.WebHost</name>
     </assembly>
     <members>
+        <member name="M:PrintIt.WebHost.Controllerrs.PrintController.PrintFromPdf(PrintIt.WebHost.Controllerrs.PrintFromTemplateRequest)">
+            <summary>
+            Prints a pdf to a network printer.
+            </summary>
+            <param name="request"></param>
+            <returns></returns>
+        </member>
     </members>
 </doc>

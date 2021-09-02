@@ -14,15 +14,15 @@ Windows service for printing PDF files to a local or network printer in the back
 
 By default, _PrintIt.ServiceHost_ is listening on http://localhost:7000. The endpoint is configurable in _appsettings.json_.
 
-#### [GET] /printers/list
+#### [GET] api/printers/list
 
 List all available printers on the system.
 
-#### [POST] /printers/install?printerPath=\\\\REMOTE_PC_NAME\\PRINTER-NAME
+#### [POST] api/printers/install?printerPath=\\\\REMOTE_PC_NAME\\PRINTER-NAME
 
 Install the network printer with the UNC-path `\\REMOTE_PC_NAME\PRINTER-NAME`. 
 
-#### [POST] /print/from-pdf
+#### [POST] api/print/from-pdf
 
 To print a PDF on a given printer, post a multipart form to this end-point with the following fields:
 
@@ -33,13 +33,7 @@ PrinterPath  | :heavy_check_mark: | The UNC-path of the printer to send the PDF 
 PageRange    |                    | An optional page range string (f.e. "1-5", "1, 3", "1, 4-8", "2-", "-5")
 
 ## .Net Core WebHost 
-Append /api/ to the routes used for the service
-
-#### [GET] /api/printers/list
-
-#### [POST] /api/printers/install?printerPath=\\\\REMOTE_PC_NAME\\PRINTER-NAME
-
-#### [POST] /api/print/from-pdf
+Allows running the application from a hosted web api
 
 
 ## PDFium

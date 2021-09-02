@@ -2,6 +2,8 @@
 
   <PropertyGroup>
     <TargetFramework>netcoreapp3.1</TargetFramework>
+    <DocumentationFile>PrintIt.Webhost.xml</DocumentationFile>
+    <GenerateDocumentationFile>True</GenerateDocumentationFile>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
@@ -37,6 +39,12 @@
 
   <ItemGroup>
     <ProjectReference Include="..\PrintIt.Core\PrintIt.Core.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Update="PrintIt.WebHost.xml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
 
 </Project>
