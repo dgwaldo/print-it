@@ -34,7 +34,8 @@ PageRange    |                    | An optional page range string (f.e. "1-5", "
 
 ## .Net Core WebHost 
 Allows running the application from a hosted web api
-If you host the API on Server Core, don't forget to install printer support
+If you host the API on Server Core, don't forget to install printer support.
+Also, ensure the app pool is set to load user profile when hosted in IIS.
 
 `Install-WindowsFeature Print-Services`
 
