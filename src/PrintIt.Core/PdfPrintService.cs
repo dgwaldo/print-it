@@ -19,7 +19,7 @@ namespace PrintIt.Core
             _logger = logger;
         }
 
-        public void Print(Stream pdfStream, string printerName, string pageRange = null)
+        public void Print(Stream pdfStream, string printerName, string pageRange = null, string printJobName = null)
         {
             if (pdfStream == null)
                 throw new ArgumentNullException(nameof(pdfStream));
@@ -29,6 +29,7 @@ namespace PrintIt.Core
             _logger.LogInformation($"Printing PDF containing {document.PageCount} page(s) to printer '{printerName}'");
 
             using var printDocument = new PrintDocument();
+            printDocument.DocumentName = printJobName ?? string.Empty;
             printDocument.PrinterSettings.PrinterName = printerName;
             PrintState state = PrintStateFactory.Create(document, pageRange);
             printDocument.PrintPage += (_, e) => PrintDocumentOnPrintPage(e, state);

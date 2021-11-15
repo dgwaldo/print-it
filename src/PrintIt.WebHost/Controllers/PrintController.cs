@@ -41,6 +41,8 @@ namespace PrintIt.WebHost.Controllerrs
         [Required]
         public string PrinterPath { get; set; }
 
+        public string PrintJobName { get; set; }
+
         public string PageRange { get; set; }
     }
 
