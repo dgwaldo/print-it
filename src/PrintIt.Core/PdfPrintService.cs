@@ -51,6 +51,6 @@ namespace PrintIt.Core
 
     public interface IPdfPrintService
     {
-        void Print(Stream pdfStream, string printerName, string pageRange = null);
+        void Print(Stream pdfStream, string printerName, string pageRange = null, string printJobName = null);
     }
 }
