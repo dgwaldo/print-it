@@ -24,6 +24,10 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Remove="PrintIt.WebHost.xml" />
+  </ItemGroup>
+
+  <ItemGroup>
     <Content Include="..\..\pdfium-binary\pdfium.dll" Link="pdfium.dll">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
@@ -39,12 +43,6 @@
 
   <ItemGroup>
     <ProjectReference Include="..\PrintIt.Core\PrintIt.Core.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <None Update="PrintIt.WebHost.xml">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
   </ItemGroup>
 
 </Project>
