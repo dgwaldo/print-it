@@ -30,7 +30,7 @@ namespace PrintIt.WebHost
 
             services.AddCors(options =>
             {
-                options.AddPolicy(name: "AMS_CORS",
+                options.AddPolicy(name: "CORS",
                                   builder =>
                                   {
                                       builder.AllowAnyOrigin();

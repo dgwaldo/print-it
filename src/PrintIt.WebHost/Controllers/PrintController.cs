@@ -19,24 +19,25 @@ namespace PrintIt.WebHost.Controllerrs
         }
 
         /// <summary>
-        /// Prints a pdf to a network printer.
+        /// Prints a file to a network printer.
+        /// Supported file types include (.pdf, .docx)
         /// </summary>
         /// <param name="request"></param>
         /// <returns></returns>
         [HttpPost]
-        [Route("from-pdf")]
-        public async Task<IActionResult> PrintFromPdf([FromForm] PrintFromTemplateRequest request)
+        [Route("")]
+        public async Task<IActionResult> PrintFile([FromForm] PrintRequest request)
         {
-            await using Stream pdfStream = request.PdfFile.OpenReadStream();
-            _pdfPrintService.Print(pdfStream, request.PrinterPath, request.PageRange, request.PdfFile.FileName);
+            await using Stream pdfStream = request.File.OpenReadStream();
+            _pdfPrintService.Print(pdfStream, request.File.ContentType, request.PrinterPath, request.PageRange, request.File.FileName);
             return Ok();
         }
     }
 
-    public sealed class PrintFromTemplateRequest
+    public class PrintRequest
     {
         [Required]
-        public IFormFile PdfFile { get; set; }
+        public IFormFile File { get; set; }
 
         [Required]
         public string PrinterPath { get; set; }

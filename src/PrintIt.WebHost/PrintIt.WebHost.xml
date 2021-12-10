@@ -4,9 +4,10 @@
         <name>PrintIt.WebHost</name>
     </assembly>
     <members>
-        <member name="M:PrintIt.WebHost.Controllerrs.PrintController.PrintFromPdf(PrintIt.WebHost.Controllerrs.PrintFromTemplateRequest)">
+        <member name="M:PrintIt.WebHost.Controllerrs.PrintController.PrintFile(PrintIt.WebHost.Controllerrs.PrintRequest)">
             <summary>
-            Prints a pdf to a network printer.
+            Prints a file to a network printer.
+            Supported file types include (.pdf, .docx)
             </summary>
             <param name="request"></param>
             <returns></returns>
