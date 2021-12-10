@@ -14,10 +14,12 @@ namespace PrintIt.Core
             services.AddSingleton<ICommandService, CommandService>();
             services.AddSingleton<IPdfPrintService, PrintService>();
             services.AddSingleton<IPrinterService, PrinterService>();
+            services.AddTransient<IConvertImgToPdf, ConvertImgToPdf>();
             services.AddSingleton<IConvertDocXToHtml, ConvertDocxToHtml>();
             services.AddSingleton<IConvertDocxToPdf, ConvertDocxToPdf>();
             services.AddSingleton(typeof(IConverter), new SynchronizedConverter(new PdfTools()));
             services.AddTransient<IDocConverterService, DocConverterService>();
+
             return services;
         }
     }

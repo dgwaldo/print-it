@@ -12,11 +12,13 @@ namespace PrintIt.Core {
 
     [ExcludeFromCodeCoverage]
     internal sealed class PrintService : IPdfPrintService {
+        private readonly IConvertImgToPdf _imgToPdf;
         private readonly IDocConverterService _docConverter;
         private readonly ILogger<PrintService> _logger;
 
-        public PrintService(IDocConverterService docConverter, ILogger<PrintService> logger) {
+        public PrintService(IDocConverterService docConverter, IConvertImgToPdf imgToPdf, ILogger<PrintService> logger) {
             _docConverter = docConverter ?? throw new ArgumentNullException(nameof(docConverter));
+            _imgToPdf = imgToPdf ?? throw new ArgumentNullException(nameof(imgToPdf));
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
         }
 
@@ -26,7 +28,9 @@ namespace PrintIt.Core {
                 throw new ArgumentNullException(nameof(stream));
             }
 
-            Stream pdf = mimeType == "application/pdf" ? stream: _docConverter.ConvertDocument(stream, mimeType);
+            Stream pdf = mimeType == "application/pdf" 
+                ? stream
+                : (mimeType == "application/vnd.openxmlformats-officedocument.wordprocessingml.document" ? _docConverter.ConvertDocument(stream, mimeType) : _imgToPdf.ImgToPdf(stream));
 
             PdfDocument document = PdfDocument.Open(pdf);
 
