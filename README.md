@@ -1,10 +1,11 @@
 # print-it
 
-Windows service for printing PDF files to a local or network printer in the background.
+Windows service for printing files to a local or network printer in the background.
 
 > Note: This repository differs from the upstream repo in a few key ways.
  * The route paths for the service now start with api/
  * The app can also be hosted as a normal web app instead of a windows service
+ * Supports multiple file types (.pdf, .docx, images)
 
 ## Usage instructions
  ### Host as Service
@@ -37,9 +38,9 @@ List all available printers on the system.
 
 Install the network printer with the UNC-path `\\REMOTE_PC_NAME\PRINTER-NAME`. 
 
-#### [POST] api/print/from-pdf
+#### [POST] api/print
 
-To print a PDF on a given printer, post a multipart form to this end-point with the following fields:
+To print to a given printer, post a multipart form to this end-point with the following fields:
 
 Field Name   | Required           | Content
 ------------ | ------------------ | ---------
