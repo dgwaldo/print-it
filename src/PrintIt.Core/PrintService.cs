@@ -12,39 +12,23 @@ namespace PrintIt.Core {
 
     [ExcludeFromCodeCoverage]
     internal sealed class PrintService : IPdfPrintService {
-
+        private readonly IDocConverterService _docConverter;
         private readonly ILogger<PrintService> _logger;
 
-        public PrintService(ILogger<PrintService> logger) {
-            _logger = logger;
+        public PrintService(IDocConverterService docConverter, ILogger<PrintService> logger) {
+            _docConverter = docConverter ?? throw new ArgumentNullException(nameof(docConverter));
+            _logger = logger ?? throw new ArgumentNullException(nameof(logger));
         }
 
-        public void Print(Stream fileStream, string? mimeType, string printerName, string pageRange = null, string printJobName = null) {
+        public void Print(Stream stream, string? mimeType, string printerName, string pageRange = null, string printJobName = null) {
 
-            if (fileStream == null) {
-                throw new ArgumentNullException(nameof(fileStream));
+            if (stream == null) {
+                throw new ArgumentNullException(nameof(stream));
             }
 
-            if (mimeType == null) {
-                throw new ArgumentNullException(nameof(mimeType));
-            }
+            Stream pdf = mimeType == "application/pdf" ? stream: _docConverter.ConvertDocument(stream, mimeType);
 
-            MemoryStream pdf = new MemoryStream();
-
-            if (mimeType == "application/vnd.openxmlformats-officedocument.wordprocessingml.document") {
-                var docxToPdf = new ConvertDocxToPdf(new ConvertDocxToHtml(), new DinkToPdf.SynchronizedConverter(new DinkToPdf.PdfTools()));
-                var memStream = new MemoryStream();
-                fileStream.CopyTo(memStream);
-                pdf = docxToPdf.DocxToPdf(memStream);
-            }
-
-            if (mimeType == "application/jpg") {
-
-            }
-
-            fileStream = pdf;
-
-            PdfDocument document = PdfDocument.Open(fileStream);
+            PdfDocument document = PdfDocument.Open(pdf);
 
             _logger.LogInformation($"Printing PDF containing {document.PageCount} page(s) to printer '{printerName}'");
 

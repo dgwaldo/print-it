@@ -2,6 +2,7 @@ using System;
 using System.IO;
 using Microsoft.Extensions.Logging;
 using Moq;
+using PrintIt.Core.DocConverters;
 using PrintIt.Core.Pdfium;
 
 namespace PrintIt.Core.Tests
@@ -13,7 +14,7 @@ namespace PrintIt.Core.Tests
         {
             // Arrange
             PdfLibrary.EnsureInitialized();
-            var service = new PrintService(Mock.Of<ILogger<PrintService>>());
+            var service = new PrintService(Mock.Of<IDocConverterService>(), Mock.Of<ILogger<PrintService>>());
             using Stream stream = GetEmbeddedResourceStream("Pdfium.dummy.pdf");
 
             // Act

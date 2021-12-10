@@ -1,5 +1,8 @@
 ﻿using System.Diagnostics.CodeAnalysis;
+using DinkToPdf;
+using DinkToPdf.Contracts;
 using Microsoft.Extensions.DependencyInjection;
+using PrintIt.Core.DocConverters;
 
 namespace PrintIt.Core
 {
@@ -11,6 +14,10 @@ namespace PrintIt.Core
             services.AddSingleton<ICommandService, CommandService>();
             services.AddSingleton<IPdfPrintService, PrintService>();
             services.AddSingleton<IPrinterService, PrinterService>();
+            services.AddSingleton<IConvertDocXToHtml, ConvertDocxToHtml>();
+            services.AddSingleton<IConvertDocxToPdf, ConvertDocxToPdf>();
+            services.AddSingleton(typeof(IConverter), new SynchronizedConverter(new PdfTools()));
+            services.AddTransient<IDocConverterService, DocConverterService>();
             return services;
         }
     }
