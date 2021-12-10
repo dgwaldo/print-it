@@ -41,7 +41,7 @@ namespace PrintIt.Core.DocConverters
 
         public WmlToHtmlConverterSettings()
         {
-            PageTitle = "";
+            PageTitle = string.Empty;
             CssClassPrefix = "pt-";
             FabricateCssClasses = true;
             GeneralCss = "span { white-space: pre-wrap; }";
@@ -2614,8 +2614,11 @@ namespace PrintIt.Core.DocConverters
                 var space = (decimal?)side.Attribute(W.space) ?? 0;
                 if (borderType == BorderType.Cell &&
                     (whichSide == "left" || whichSide == "right"))
+                {
                     if (space < 5.4m)
                         space = 5.4m;
+                }
+
                 style.Add("padding-" + whichSide,
                     space == 0 ? "0" : string.Format(NumberFormatInfo.InvariantInfo, "{0:0.0}pt", space));
 
@@ -2625,10 +2628,7 @@ namespace PrintIt.Core.DocConverters
                 var sz = (int)side.Attribute(W.sz);
                 var space = (decimal?)side.Attribute(W.space) ?? 0;
                 var color = (string)side.Attribute(W.color);
-                if (color == null || color == "auto")
-                    color = "windowtext";
-                else
-                    color = ConvertColor(color);
+                color = color == null || color == "auto" ? "windowtext" : ConvertColor(color);
 
                 decimal borderWidthInPoints = Math.Max(1m, Math.Min(96m, Math.Max(2m, sz)) / 8m);
 
@@ -2638,26 +2638,32 @@ namespace PrintIt.Core.DocConverters
                     var borderInfo = BorderStyleMap[type];
                     borderStyle = borderInfo.CssName;
                     if (type == "double")
+                    {
                         if (sz <= 8)
                             borderWidthInPoints = 2.5m;
                         else if (sz <= 18)
                             borderWidthInPoints = 6.75m;
                         else
                             borderWidthInPoints = sz / 3m;
+                    }
                     else if (type == "triple")
+                    {
                         if (sz <= 8)
                             borderWidthInPoints = 8m;
                         else if (sz <= 18)
                             borderWidthInPoints = 11.25m;
                         else
                             borderWidthInPoints = 11.25m;
+                    }
                     else if (type.ToLower().Contains("dash"))
+                    {
                         if (sz <= 4)
                             borderWidthInPoints = 1m;
                         else if (sz <= 12)
                             borderWidthInPoints = 1.5m;
                         else
                             borderWidthInPoints = 2m;
+                    }
                     else if (type != "single")
                         borderWidthInPoints = borderInfo.CssSize;
                 }
@@ -2668,8 +2674,10 @@ namespace PrintIt.Core.DocConverters
                 style.Add("border-" + whichSide, borderStyle + " " + color + " " + borderWidth);
                 if (borderType == BorderType.Cell &&
                     (whichSide == "left" || whichSide == "right"))
+                {
                     if (space < 5.4m)
                         space = 5.4m;
+                }
 
                 style.Add("padding-" + whichSide,
                     space == 0 ? "0" : string.Format(NumberFormatInfo.InvariantInfo, "{0:0.0}pt", space));
