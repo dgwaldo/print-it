@@ -2,6 +2,7 @@
 using DinkToPdf;
 using System.IO;
 using System.Text;
+using DinkToPdf.Contracts;
 
 namespace PrintIt.Core.DocConverters
 {
@@ -9,9 +10,9 @@ namespace PrintIt.Core.DocConverters
     {
 
         private IConvertDocXToHtml _docToHtml;
-        private SynchronizedConverter _htmlToPdf;
+        private IConverter _htmlToPdf;
 
-        public ConvertDocxToPdf(IConvertDocXToHtml docToHtml, SynchronizedConverter htmlToPdf)
+        public ConvertDocxToPdf(IConvertDocXToHtml docToHtml, IConverter htmlToPdf)
         {
             _docToHtml = docToHtml ?? throw new ArgumentNullException(nameof(docToHtml));
             _htmlToPdf = htmlToPdf ?? throw new ArgumentNullException(nameof(htmlToPdf));
