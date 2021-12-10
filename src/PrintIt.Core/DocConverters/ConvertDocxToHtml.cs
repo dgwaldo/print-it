@@ -16,7 +16,7 @@ namespace PrintIt.Core.DocConverters
         /// To keep spacing consistent in layout with tables keep a paragraph between tables.
         /// </summary>
         /// <param name="docMemoryStream">MemoryStream containting a WordprocessingDocument object.</param>
-        /// <returns>Memory stream</returns>
+        /// <returns>Memory stream.</returns>
         public MemoryStream DocxToHtml(MemoryStream docMemoryStream)
         {
             var wDoc = WordprocessingDocument.Open(docMemoryStream, true);
