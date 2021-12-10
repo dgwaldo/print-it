@@ -9,8 +9,10 @@ using PrintIt.Core.Internal;
 using PrintIt.Core.Pdfium;
 
 namespace PrintIt.Core {
-    //[ExcludeFromCodeCoverage]
+
+    [ExcludeFromCodeCoverage]
     internal sealed class PrintService : IPdfPrintService {
+
         private readonly ILogger<PrintService> _logger;
 
         public PrintService(ILogger<PrintService> logger) {
@@ -29,7 +31,7 @@ namespace PrintIt.Core {
 
             MemoryStream pdf = new MemoryStream();
 
-            if (mimeType == "application/msword") {
+            if (mimeType == "application/vnd.openxmlformats-officedocument.wordprocessingml.document") {
                 var docxToPdf = new ConvertDocxToPdf(new ConvertDocxToHtml(), new DinkToPdf.SynchronizedConverter(new DinkToPdf.PdfTools()));
                 var memStream = new MemoryStream();
                 fileStream.CopyTo(memStream);
@@ -39,7 +41,6 @@ namespace PrintIt.Core {
             if (mimeType == "application/jpg") {
 
             }
-
 
             fileStream = pdf;
 
