@@ -13,7 +13,7 @@ namespace PrintIt.Core.Tests
         {
             // Arrange
             PdfLibrary.EnsureInitialized();
-            var service = new PdfPrintService(Mock.Of<ILogger<PdfPrintService>>());
+            var service = new PrintService(Mock.Of<ILogger<PrintService>>());
             using Stream stream = GetEmbeddedResourceStream("Pdfium.dummy.pdf");
 
             // Act

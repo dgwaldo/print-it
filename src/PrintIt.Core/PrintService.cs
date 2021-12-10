@@ -4,27 +4,46 @@ using System.Drawing;
 using System.Drawing.Printing;
 using System.IO;
 using Microsoft.Extensions.Logging;
+using PrintIt.Core.DocConverters;
 using PrintIt.Core.Internal;
 using PrintIt.Core.Pdfium;
 
-namespace PrintIt.Core
-{
+namespace PrintIt.Core {
     [ExcludeFromCodeCoverage]
-    internal sealed class PdfPrintService : IPdfPrintService
-    {
-        private readonly ILogger<PdfPrintService> _logger;
+    internal sealed class PrintService : IPdfPrintService {
+        private readonly ILogger<PrintService> _logger;
 
-        public PdfPrintService(ILogger<PdfPrintService> logger)
-        {
+        public PrintService(ILogger<PrintService> logger) {
             _logger = logger;
         }
 
-        public void Print(Stream pdfStream, string printerName, string pageRange = null, string printJobName = null)
-        {
-            if (pdfStream == null)
-                throw new ArgumentNullException(nameof(pdfStream));
+        public void Print(Stream fileStream, string? mimeType, string printerName, string pageRange = null, string printJobName = null) {
 
-            PdfDocument document = PdfDocument.Open(pdfStream);
+            if (fileStream == null) {
+                throw new ArgumentNullException(nameof(fileStream));
+            }
+
+            if (mimeType == null) {
+                throw new ArgumentNullException(nameof(mimeType));
+            }
+
+            MemoryStream pdf;
+
+            if (mimeType == "application/msword") {
+                var docxToPdf = new ConvertDocxToPdf(new ConvertDocxToHtml(), new DinkToPdf.SynchronizedConverter(new DinkToPdf.PdfTools()));
+                var memStream = new MemoryStream();
+                fileStream.CopyTo(memStream);
+                pdf = docxToPdf.DocxToPdf(memStream);
+            }
+
+            if (mimeType == "application/jpg") {
+
+            }
+
+
+            fileStream = pdf;
+
+            PdfDocument document = PdfDocument.Open(fileStream);
 
             _logger.LogInformation($"Printing PDF containing {document.PageCount} page(s) to printer '{printerName}'");
 
@@ -36,8 +55,7 @@ namespace PrintIt.Core
             printDocument.Print();
         }
 
-        private void PrintDocumentOnPrintPage(PrintPageEventArgs e, PrintState state)
-        {
+        private void PrintDocumentOnPrintPage(PrintPageEventArgs e, PrintState state) {
             var destinationRect = new RectangleF(
                 x: e.Graphics.VisibleClipBounds.X * e.Graphics.DpiX / 100.0f,
                 y: e.Graphics.VisibleClipBounds.Y * e.Graphics.DpiY / 100.0f,
@@ -47,10 +65,5 @@ namespace PrintIt.Core
             page.RenderTo(e.Graphics, destinationRect);
             e.HasMorePages = state.AdvanceToNextPage();
         }
-    }
-
-    public interface IPdfPrintService
-    {
-        void Print(Stream pdfStream, string printerName, string pageRange = null, string printJobName = null);
     }
 }

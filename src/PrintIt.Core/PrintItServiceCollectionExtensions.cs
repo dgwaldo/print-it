@@ -9,7 +9,7 @@ namespace PrintIt.Core
         public static IServiceCollection AddPrintIt(this IServiceCollection services)
         {
             services.AddSingleton<ICommandService, CommandService>();
-            services.AddSingleton<IPdfPrintService, PdfPrintService>();
+            services.AddSingleton<IPdfPrintService, PrintService>();
             services.AddSingleton<IPrinterService, PrinterService>();
             return services;
         }
