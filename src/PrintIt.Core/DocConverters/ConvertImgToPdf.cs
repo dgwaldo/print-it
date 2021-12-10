@@ -16,16 +16,15 @@ namespace PrintIt.Core.DocConverters {
 
         public MemoryStream ImgToPdf(Stream imgMemStream) {
 
-            var imgBase64 = ImageToBase64(imgMemStream);
+            var imgBase64 = "data:image/png;base64," + ImageToBase64(imgMemStream);
 
             var htmlText = @$"<!DOCTYPE html>
                                 <html>
                                   <head>
-                                    <title>Title of the document</title>
+                                    <title>Img</title>
                                   </head>
                                   <body>
                                     <div>
-                                      <p>From wikipedia</p>
                                       <img src=""{@imgBase64}"" alt=""Red dot"" />
                                         </div>
                                       </body >
