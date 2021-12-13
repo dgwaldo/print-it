@@ -27,7 +27,7 @@ namespace PrintIt.WebHost
 
             try
             {
-                Log.Information("Starting web host for AMS.Companies.API");
+                Log.Information("Starting web host for PrintIt.API");
                 CreateHostBuilder(args).Build().Run();
                 return 0;
             }
