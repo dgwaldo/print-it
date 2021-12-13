@@ -14,7 +14,7 @@ namespace PrintIt.Core.Tests
         {
             // Arrange
             PdfLibrary.EnsureInitialized();
-            var service = new PrintService(Mock.Of<IDocConverterService>(), Mock.Of<ILogger<PrintService>>());
+            var service = new PrintService(Mock.Of<IDocConverterService>(), Mock.Of<IConvertImgToPdf>(), Mock.Of<ILogger<PrintService>>());
             using Stream stream = GetEmbeddedResourceStream("Pdfium.dummy.pdf");
 
             // Act
