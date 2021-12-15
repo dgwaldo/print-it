@@ -28,12 +28,10 @@ namespace PrintIt.Core {
                 throw new ArgumentNullException(nameof(stream));
             }
 
-            //Stream pdf = mimeType == "application/pdf" 
-            //    ? stream
-            //    : (mimeType == "application/vnd.openxmlformats-officedocument.wordprocessingml.document" ? _docConverter.ConvertDocument(stream, mimeType) : _imgToPdf.ImgToPdf(stream));
-
-            Stream pdf = stream;
-            if (mimeType == "application/vnd.openxmlformats-officedocument.wordprocessingml.document") {
+            Stream pdf;
+            if (mimeType == "application/pdf") {
+                pdf = stream;
+            } else if (mimeType == "application/vnd.openxmlformats-officedocument.wordprocessingml.document") {
                 pdf = _docConverter.ConvertDocument(stream, mimeType);
             } else if (mimeType.StartsWith("image")) {
                 pdf = _imgToPdf.ImgToPdf(stream);
