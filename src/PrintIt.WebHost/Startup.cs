@@ -24,10 +24,15 @@ namespace PrintIt.WebHost {
         public void ConfigureServices(IServiceCollection services) {
             PdfLibrary.EnsureInitialized();
             services.AddPrintIt();
-
+            var allowedUrl = Configuration.GetValue<string>("AllowedCors");
             services.AddCors(options => {
                 options.AddPolicy(name: CorsPolicy, builder => {
-                    builder.AllowAnyOrigin();
+                    builder
+                     .WithOrigins(allowedUrl)
+                    .AllowCredentials()
+                    .AllowAnyMethod()
+                    .AllowAnyHeader()
+                     .SetIsOriginAllowedToAllowWildcardSubdomains();
                 });
             });
 
@@ -57,6 +62,7 @@ namespace PrintIt.WebHost {
 #endif
 
             app.UseHttpsRedirection();
+
             app.UseStaticFiles();
 
             app.UseRouting();
