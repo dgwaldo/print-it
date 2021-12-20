@@ -11,30 +11,24 @@ using System.IO;
 using Serilog;
 using PrintIt.Core.Pdfium;
 
-namespace PrintIt.WebHost
-{
-	public class Startup
-	{
-		public Startup(IConfiguration configuration)
-		{
-			Configuration = configuration;
-		}
+namespace PrintIt.WebHost {
+    public class Startup {
+        public Startup(IConfiguration configuration) {
+            Configuration = configuration;
+        }
 
-		public IConfiguration Configuration { get; }
+        public IConfiguration Configuration { get; }
+        public string CorsPolicy => "CORS";
 
-		// This method gets called by the runtime. Use this method to add services to the container.
-		public void ConfigureServices(IServiceCollection services)
-		{
+        // This method gets called by the runtime. Use this method to add services to the container.
+        public void ConfigureServices(IServiceCollection services) {
             PdfLibrary.EnsureInitialized();
             services.AddPrintIt();
 
-            services.AddCors(options =>
-            {
-                options.AddPolicy(name: "CORS",
-                                  builder =>
-                                  {
-                                      builder.AllowAnyOrigin();
-                                  });
+            services.AddCors(options => {
+                options.AddPolicy(name: CorsPolicy, builder => {
+                    builder.AllowAnyOrigin();
+                });
             });
 
             services.AddControllers();
@@ -47,19 +41,15 @@ namespace PrintIt.WebHost
             });
         }
 
-		// This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-		public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
-		{
-			if (env.IsDevelopment())
-			{
-				app.UseDeveloperExceptionPage();
-			}
-			else
-			{
-				app.UseExceptionHandler("/Error");
-				// The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
-				app.UseHsts();
-			}
+        // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env) {
+            if (env.IsDevelopment()) {
+                app.UseDeveloperExceptionPage();
+            } else {
+                app.UseExceptionHandler("/Error");
+                // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
+                app.UseHsts();
+            }
 
 
 #if DEBUG
@@ -69,9 +59,9 @@ namespace PrintIt.WebHost
             app.UseHttpsRedirection();
             app.UseStaticFiles();
 
-			app.UseRouting();
+            app.UseRouting();
 
-            app.UseCors();
+            app.UseCors(CorsPolicy);
 
             app.UseEndpoints(endpoints => {
                 endpoints.MapControllers();
