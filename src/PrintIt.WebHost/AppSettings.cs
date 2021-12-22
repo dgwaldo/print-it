@@ -4,6 +4,11 @@ using System.ComponentModel.DataAnnotations;
 namespace PrintIt.WebHost {
     public class AppSettings {
 
+        public AppSettings() {
+            DataProtection = null;
+            CookieAuth = null;  
+        }
+
         public string AllowedHosts { get; set; }
 
         [Required]

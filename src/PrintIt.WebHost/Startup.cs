@@ -52,7 +52,6 @@ namespace PrintIt.WebHost {
                 });
             });
 
-            services.AddControllers();
 
             services.AddSwaggerGen(c => {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "PrintIt API", Version = "v1" });
@@ -74,6 +73,8 @@ namespace PrintIt.WebHost {
                                    options.Cookie.Name = AppSettings.CookieAuth.AppCookieName;
                                });
             }
+
+            services.AddControllers();
 
         }
 
@@ -107,7 +108,11 @@ namespace PrintIt.WebHost {
             }
 
             app.UseEndpoints(endpoints => {
-                endpoints.MapControllers().RequireAuthorization(new AuthorizeAttribute());
+                if (AppSettings.CookieAuth == null) {
+                    endpoints.MapControllers();
+                } else {
+                    endpoints.MapControllers().RequireAuthorization(new AuthorizeAttribute());
+                }
             });
 
             app.UseSwagger();
