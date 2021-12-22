@@ -10,6 +10,8 @@ using System.Reflection;
 using System.IO;
 using Serilog;
 using PrintIt.Core.Pdfium;
+using Microsoft.AspNetCore.DataProtection;
+using Microsoft.AspNetCore.Authorization;
 
 namespace PrintIt.WebHost {
     public class Startup {
@@ -18,21 +20,35 @@ namespace PrintIt.WebHost {
         }
 
         public IConfiguration Configuration { get; }
+
+        public AppSettings AppSettings { get; set; }
+
         public string CorsPolicy => "CORS";
 
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services) {
+
+            var appSettings = new AppSettings();
+            Configuration.Bind(appSettings);
+            AppSettings = appSettings;
+
+            services.AddOptions<AppSettings>()
+                    .Bind(Configuration)
+                    .ValidateDataAnnotations()
+                    .ValidateOnStart();
+
             PdfLibrary.EnsureInitialized();
+
             services.AddPrintIt();
-            var allowedUrl = Configuration.GetValue<string>("AllowedCors");
+
             services.AddCors(options => {
                 options.AddPolicy(name: CorsPolicy, builder => {
                     builder
-                     .WithOrigins(allowedUrl)
+                    .WithOrigins(AppSettings.AllowedCors)
                     .AllowCredentials()
                     .AllowAnyMethod()
                     .AllowAnyHeader()
-                     .SetIsOriginAllowedToAllowWildcardSubdomains();
+                    .SetIsOriginAllowedToAllowWildcardSubdomains();
                 });
             });
 
@@ -44,6 +60,21 @@ namespace PrintIt.WebHost {
                 var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
                 c.IncludeXmlComments(xmlPath);
             });
+
+            if (AppSettings.DataProtection != null) {
+                services.AddDataProtection()
+                .PersistKeysToFileSystem(new DirectoryInfo(AppSettings.DataProtection.PersistKeyPath))
+                .SetApplicationName(AppSettings.DataProtection.ApplicationName);
+            }
+
+            if (AppSettings.CookieAuth != null) {
+                services.AddAuthentication("ApplicationCookie")
+                               .AddCookie("ApplicationCookie", options => {
+                                   options.Cookie.Path = "/";
+                                   options.Cookie.Name = AppSettings.CookieAuth.AppCookieName;
+                               });
+            }
+
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -69,8 +100,14 @@ namespace PrintIt.WebHost {
 
             app.UseCors(CorsPolicy);
 
+            if (AppSettings.CookieAuth != null) {
+                app.UseAuthentication();
+
+                app.UseAuthorization();
+            }
+
             app.UseEndpoints(endpoints => {
-                endpoints.MapControllers();
+                endpoints.MapControllers().RequireAuthorization(new AuthorizeAttribute());
             });
 
             app.UseSwagger();
