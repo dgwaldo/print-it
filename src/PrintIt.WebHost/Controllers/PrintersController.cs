@@ -30,6 +30,14 @@ namespace PrintIt.WebHost.Controllerrs
             _printerService.InstallPrinter(printerPath);
             return Ok();
         }
+
+
+        [HttpDelete]
+        [Route("uninstall")]
+        public IActionResult UnInstallPrinter([FromQuery] string printerPath) {
+            _printerService.RemovePrinter(printerPath);
+            return Ok();
+        }
     }
 
 }
