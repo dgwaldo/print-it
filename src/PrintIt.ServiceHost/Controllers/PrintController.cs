@@ -23,7 +23,7 @@ namespace PrintIt.ServiceHost.Controllers
         public async Task<IActionResult> PrintFromPdf([FromForm] PrintFromTemplateRequest request)
         {
             await using Stream pdfStream = request.PdfFile.OpenReadStream();
-            _pdfPrintService.Print(pdfStream, request.PrinterPath, request.PageRange);
+            _pdfPrintService.Print(pdfStream, request.PrinterPath, request.PageRange, duplex: request.Duplex);
             return Ok();
         }
     }
@@ -37,5 +37,7 @@ namespace PrintIt.ServiceHost.Controllers
         public string PrinterPath { get; set; }
 
         public string PageRange { get; set; }
+
+        public bool Duplex { get; set; }
     }
 }

@@ -22,7 +22,7 @@ namespace PrintIt.Core {
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
         }
 
-        public void Print(Stream stream, string? mimeType, string printerName, string pageRange = null, string printJobName = null) {
+        public void Print(Stream stream, string? mimeType, string printerName, string pageRange = null, string printJobName = null, bool duplex = false) {
 
             if (stream == null) {
                 throw new ArgumentNullException(nameof(stream));
@@ -44,6 +44,10 @@ namespace PrintIt.Core {
             _logger.LogInformation($"Printing PDF containing {document.PageCount} page(s) to printer '{printerName}'");
 
             using var printDocument = new PrintDocument();
+            if (printDocument.PrinterSettings.CanDuplex && duplex) {
+                printDocument.PrinterSettings.Duplex = Duplex.Default;
+            }
+            
             printDocument.DocumentName = printJobName ?? string.Empty;
             printDocument.PrinterSettings.PrinterName = printerName;
             PrintState state = PrintStateFactory.Create(document, pageRange);

@@ -29,7 +29,7 @@ namespace PrintIt.WebHost.Controllerrs
         public async Task<IActionResult> PrintFile([FromForm] PrintRequest request)
         {
             await using Stream pdfStream = request.File.OpenReadStream();
-            _pdfPrintService.Print(pdfStream, request.File.ContentType, request.PrinterPath, request.PageRange, request.File.FileName);
+            _pdfPrintService.Print(pdfStream, request.File.ContentType, request.PrinterPath, request.PageRange, request.File.FileName, duplex: request.Duplex);
             return Ok();
         }
     }
@@ -43,6 +43,7 @@ namespace PrintIt.WebHost.Controllerrs
         public string PrinterPath { get; set; }
 
         public string PageRange { get; set; }
+        public bool Duplex { get; set; }
     }
 
 }
