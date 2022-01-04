@@ -47,7 +47,7 @@ namespace PrintIt.Core {
             printDocument.PrinterSettings.PrinterName = printerName;
 
             if (printDocument.PrinterSettings.CanDuplex && duplex) {
-                printDocument.PrinterSettings.Duplex = Duplex.Default;
+                printDocument.PrinterSettings.Duplex = Duplex.Vertical;
             }
             
             printDocument.DocumentName = printJobName ?? string.Empty;
