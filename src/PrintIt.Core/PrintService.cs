@@ -44,12 +44,13 @@ namespace PrintIt.Core {
             _logger.LogInformation($"Printing PDF containing {document.PageCount} page(s) to printer '{printerName}'");
 
             using var printDocument = new PrintDocument();
+            printDocument.PrinterSettings.PrinterName = printerName;
+
             if (printDocument.PrinterSettings.CanDuplex && duplex) {
                 printDocument.PrinterSettings.Duplex = Duplex.Default;
             }
             
             printDocument.DocumentName = printJobName ?? string.Empty;
-            printDocument.PrinterSettings.PrinterName = printerName;
             PrintState state = PrintStateFactory.Create(document, pageRange);
             printDocument.PrintPage += (_, e) => PrintDocumentOnPrintPage(e, state);
             printDocument.Print();
