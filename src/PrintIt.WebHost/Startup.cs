@@ -12,6 +12,8 @@ using Serilog;
 using PrintIt.Core.Pdfium;
 using Microsoft.AspNetCore.DataProtection;
 using Microsoft.AspNetCore.Authorization;
+using MassTransit;
+using PrintIt.WebHost.RequestConsumers;
 
 namespace PrintIt.WebHost {
     public class Startup {
@@ -52,6 +54,19 @@ namespace PrintIt.WebHost {
                 });
             });
 
+            if (AppSettings.RabbitMqSettings != null) {
+                services.AddMassTransit(x => {
+                    x.UsingRabbitMq((ctx, cfg) => {
+                        cfg.Host(new Uri(appSettings.RabbitMqSettings.Host), host => {
+                            host.Username(AppSettings.RabbitMqSettings.Username);
+                            host.Password(AppSettings.RabbitMqSettings.Password);
+                        });
+                        cfg.ConfigureEndpoints(ctx);
+                    });
+                    x.AddConsumer<PrintConsumer>();
+                });
+                services.AddMassTransitHostedService();
+            }
 
             services.AddSwaggerGen(c => {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "PrintIt API", Version = "v1" });

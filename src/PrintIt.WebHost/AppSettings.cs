@@ -6,7 +6,7 @@ namespace PrintIt.WebHost {
 
         public AppSettings() {
             DataProtection = null;
-            CookieAuth = null;  
+            CookieAuth = null;
         }
 
         public string AllowedHosts { get; set; }
@@ -19,8 +19,16 @@ namespace PrintIt.WebHost {
 
         public DataProtection DataProtection { get; set; }
 
+        public RabbitMqSettings RabbitMqSettings { get; set; }
+
         public CookieAuth CookieAuth { get; set; }
 
+    }
+
+    public class RabbitMqSettings {
+        public string Host { get; set; }
+        public string Username { get; set; }
+        public string Password { get; set; }
     }
 
     public class DataProtection {
