@@ -1,5 +1,5 @@
 ﻿namespace PrintIt.Messages {
-    public interface SendDocumentForPrint {
+    public interface ISendDocumentForPrint {
         public byte[] File { get; }
         public string FileName { get; }
         public string FileContentType { get; }
