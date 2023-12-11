@@ -5,8 +5,6 @@ namespace PrintIt.WebHost {
     public class AppSettings {
 
         public AppSettings() {
-            DataProtection = null;
-            CookieAuth = null;
         }
 
         public string AllowedHosts { get; set; }
@@ -17,11 +15,10 @@ namespace PrintIt.WebHost {
         [Required]
         public SerilogAppSettings Serilog { get; set; }
 
-        public DataProtection DataProtection { get; set; }
+        public string JwtTokenKey { get; set; }
 
         public RabbitMqSettings RabbitMqSettings { get; set; }
 
-        public CookieAuth CookieAuth { get; set; }
 
     }
 
@@ -31,18 +28,6 @@ namespace PrintIt.WebHost {
         public string Password { get; set; }
     }
 
-    public class DataProtection {
-
-        public string PersistKeyPath { get; set; }
-        public string ApplicationName { get; set; }
-
-    }
-
-    public class CookieAuth {
-
-        public string AppCookieName { get; set; }
-
-    }
 
     public class SerilogAppSettings {
         public class LevelOverride {

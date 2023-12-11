@@ -8,12 +8,15 @@ using Microsoft.OpenApi.Models;
 using System;
 using System.Reflection;
 using System.IO;
-using Serilog;
 using PrintIt.Core.Pdfium;
-using Microsoft.AspNetCore.DataProtection;
 using Microsoft.AspNetCore.Authorization;
 using MassTransit;
 using PrintIt.WebHost.RequestConsumers;
+using System.Collections.Generic;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.IdentityModel.Tokens;
+using System.Threading.Tasks;
+using System.Text;
 
 namespace PrintIt.WebHost {
     public class Startup {
@@ -69,27 +72,35 @@ namespace PrintIt.WebHost {
             }
 
             services.AddSwaggerGen(c => {
+                c.AddSecurityDefinition("ApiKey", new OpenApiSecurityScheme {
+                    Type = SecuritySchemeType.ApiKey,
+                    In = ParameterLocation.Header,
+                    Name = "Authorization",
+                    Description = "Bearer token",
+                });
+
+                c.AddSecurityRequirement(new OpenApiSecurityRequirement{
+                    {
+                      new OpenApiSecurityScheme {
+                            Reference = new OpenApiReference {
+                                Type = ReferenceType.SecurityScheme,
+                                Id = "ApiKey"
+                            },
+                        },
+                        new List<string>()
+                    }
+                });
+
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "PrintIt API", Version = "v1" });
                 var xmlFile = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
                 var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
                 c.IncludeXmlComments(xmlPath);
             });
 
-            if (AppSettings.DataProtection != null) {
-                services.AddDataProtection()
-                .PersistKeysToFileSystem(new DirectoryInfo(AppSettings.DataProtection.PersistKeyPath))
-                .SetApplicationName(AppSettings.DataProtection.ApplicationName);
-            }
-
-            if (AppSettings.CookieAuth != null) {
-                services.AddAuthentication("ApplicationCookie")
-                               .AddCookie("ApplicationCookie", options => {
-                                   options.Cookie.Path = "/";
-                                   options.Cookie.Name = AppSettings.CookieAuth.AppCookieName;
-                               });
-            }
-
             services.AddControllers();
+
+            ConfigureJwtServices(services);
+
 
         }
 
@@ -116,14 +127,14 @@ namespace PrintIt.WebHost {
 
             app.UseCors(CorsPolicy);
 
-            if (AppSettings.CookieAuth != null) {
+            if (AppSettings.JwtTokenKey != null) {
                 app.UseAuthentication();
 
                 app.UseAuthorization();
             }
 
             app.UseEndpoints(endpoints => {
-                if (AppSettings.CookieAuth == null) {
+                if (AppSettings.JwtTokenKey == null) {
                     endpoints.MapControllers();
                 } else {
                     endpoints.MapControllers().RequireAuthorization(new AuthorizeAttribute());
@@ -136,6 +147,30 @@ namespace PrintIt.WebHost {
                 c.RoutePrefix = string.Empty;
             });
 
+        }
+
+        private void ConfigureJwtServices(IServiceCollection services) {
+
+            services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+                    .AddJwtBearer(options => {
+                        options.Events = new JwtBearerEvents {
+                            OnAuthenticationFailed = context => {
+                                if (context.Exception.GetType() == typeof(SecurityTokenExpiredException)) {
+                                    context.Response.Headers.Add("Token-Expired", "true");
+                                }
+                                return Task.CompletedTask;
+                            }
+                        };
+                        options.MapInboundClaims = true;
+                        options.TokenValidationParameters = new TokenValidationParameters {
+                            ValidateIssuer = true,
+                            ValidateAudience = true,
+                            ValidateIssuerSigningKey = true,
+                            ValidIssuer = "https://ams.agmotion.com",
+                            ValidAudience = "https://ams.agmotion.com",
+                            IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(AppSettings.JwtTokenKey))
+                        };
+                    });
         }
     }
 }
